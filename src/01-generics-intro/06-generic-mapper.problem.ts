@@ -1,7 +1,12 @@
 import { expect, it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
-export const concatenateFirstNameAndLastName = (user: unknown) => {
+type User = {
+  firstName: string;
+  lastName: string;
+}
+
+export const concatenateFirstNameAndLastName = <T extends User>(user: T) => {
   return {
     ...user,
     fullName: `${user.firstName} ${user.lastName}`,
