@@ -1,58 +1,62 @@
-import { expect, it } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { expect, it } from 'vitest';
+import { Equal, Expect } from '../helpers/type-utils';
 
-const makeFormValidatorFactory = (validators: unknown) => (config: unknown) => {
-  return (values: unknown) => {
-    const errors = {} as any;
+const makeFormValidatorFactory =
+  <T extends string>(
+    validators: Record<T, (value: string) => string | undefined>
+  ) =>
+  <U extends string>(config: Record<U, T[]>) => {
+    return (values: Record<U, string>) => {
+      const errors = {} as Record<U, string | undefined>;
 
-    for (const key in config) {
-      for (const validator of config[key]) {
-        const error = validators[validator](values[key]);
-        if (error) {
-          errors[key] = error;
-          break;
+      for (const key in config) {
+        for (const validator of config[key]) {
+          const error = validators[validator](values[key]);
+          if (error) {
+            errors[key] = error;
+            break;
+          }
         }
       }
-    }
 
-    return errors;
+      return errors;
+    };
   };
-};
 
 const createFormValidator = makeFormValidatorFactory({
   required: (value) => {
-    if (value === "") {
-      return "Required";
+    if (value === '') {
+      return 'Required';
     }
   },
   minLength: (value) => {
     if (value.length < 5) {
-      return "Minimum length is 5";
+      return 'Minimum length is 5';
     }
   },
   email: (value) => {
-    if (!value.includes("@")) {
-      return "Invalid email";
+    if (!value.includes('@')) {
+      return 'Invalid email';
     }
   },
 });
 
 const validateUser = createFormValidator({
-  id: ["required"],
-  username: ["required", "minLength"],
-  email: ["required", "email"],
+  id: ['required'],
+  username: ['required', 'minLength'],
+  email: ['required', 'email'],
 });
 
-it("Should properly validate a user", () => {
+it('Should properly validate a user', () => {
   const errors = validateUser({
-    id: "1",
-    username: "john",
-    email: "Blah",
+    id: '1',
+    username: 'john',
+    email: 'Blah',
   });
 
   expect(errors).toEqual({
-    username: "Minimum length is 5",
-    email: "Invalid email",
+    username: 'Minimum length is 5',
+    email: 'Invalid email',
   });
 
   type test = Expect<
@@ -67,20 +71,20 @@ it("Should properly validate a user", () => {
   >;
 });
 
-it("Should not allow you to specify a validator that does not exist", () => {
+it('Should not allow you to specify a validator that does not exist', () => {
   createFormValidator({
     // @ts-expect-error
-    id: ["i-do-not-exist"],
+    id: ['i-do-not-exist'],
   });
 });
 
-it("Should not allow you to validate an object property that does not exist", () => {
+it('Should not allow you to validate an object property that does not exist', () => {
   const validator = createFormValidator({
-    id: ["required"],
+    id: ['required'],
   });
 
   validator({
     // @ts-expect-error
-    name: "123",
+    name: '123',
   });
 });

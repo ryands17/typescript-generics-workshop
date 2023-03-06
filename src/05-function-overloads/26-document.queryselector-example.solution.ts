@@ -1,9 +1,9 @@
-import { Equal, Expect } from "../helpers/type-utils";
+import { Equal, Expect } from '../helpers/type-utils';
 
-const divElement = document.querySelector("div");
-const spanElement = document.querySelector("span");
+const divElement = document.querySelector('div');
+const spanElement = document.querySelector('span');
 
-const divElement2 = document.querySelector<HTMLDivElement>("div.foo");
+const divElement2 = document.querySelector<HTMLDivElement>('div.foo');
 
 type tests = [
   Expect<Equal<typeof divElement, HTMLDivElement | null>>,

@@ -1,7 +1,13 @@
-import { expect, it } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { expect, it } from 'vitest';
+import { Equal, Expect } from '../helpers/type-utils';
 
-const makeInfiniteScroll = (params: unknown) => {
+type Params<T extends object> = {
+  key: keyof T;
+  initialRows?: T[];
+  fetchRows: () => Promise<T[]>;
+};
+
+const makeInfiniteScroll = <TRow extends object>(params: Params<TRow>) => {
   const data = params.initialRows || [];
 
   const scroll = async () => {
@@ -15,10 +21,10 @@ const makeInfiniteScroll = (params: unknown) => {
   };
 };
 
-it("Should fetch more data when scrolling", async () => {
+it('Should fetch more data when scrolling', async () => {
   const table = makeInfiniteScroll({
-    key: "id",
-    fetchRows: () => Promise.resolve([{ id: 1, name: "John" }]),
+    key: 'id',
+    fetchRows: () => Promise.resolve([{ id: 1, name: 'John' }]),
   });
 
   await table.scroll();
@@ -26,31 +32,31 @@ it("Should fetch more data when scrolling", async () => {
   await table.scroll();
 
   expect(table.getRows()).toEqual([
-    { id: 1, name: "John" },
-    { id: 1, name: "John" },
+    { id: 1, name: 'John' },
+    { id: 1, name: 'John' },
   ]);
 });
 
-it("Should ensure that the key is one of the properties of the row", () => {
+it('Should ensure that the key is one of the properties of the row', () => {
   makeInfiniteScroll({
     // @ts-expect-error
-    key: "name",
+    key: 'name',
     fetchRows: () =>
       Promise.resolve([
         {
-          id: "1",
+          id: '1',
         },
       ]),
   });
 });
 
-it("Should allow you to pass initialRows", () => {
+it('Should allow you to pass initialRows', () => {
   const { getRows } = makeInfiniteScroll({
-    key: "id",
+    key: 'id',
     initialRows: [
       {
         id: 1,
-        name: "John",
+        name: 'John',
       },
     ],
     fetchRows: () => Promise.resolve([]),
@@ -61,7 +67,7 @@ it("Should allow you to pass initialRows", () => {
   expect(rows).toEqual([
     {
       id: 1,
-      name: "John",
+      name: 'John',
     },
   ]);
 
