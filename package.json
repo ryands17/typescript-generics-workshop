@@ -9,6 +9,7 @@
     "@types/react": "^18.0.27",
     "chokidar": "^3.5.3",
     "cross-fetch": "^3.1.5",
+    "prettier": "2.8.4",
     "typescript": "^4.8.3",
     "vitest": "^0.21.1"
   },
@@ -103,5 +104,8 @@
     "cross-env": "^7.0.3",
     "fast-glob": "^3.2.12",
     "ts-toolbelt": "^9.6.0"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }

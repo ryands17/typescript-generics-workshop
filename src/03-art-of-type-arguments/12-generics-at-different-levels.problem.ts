@@ -1,18 +1,24 @@
-import { expect, it, describe } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { describe, expect, it } from 'vitest';
+import { Equal, Expect } from '../helpers/type-utils';
 
-export const getHomePageFeatureFlags = (
-  config: unknown,
-  override: (flags: unknown) => unknown
+export const getHomePageFeatureFlags = <HomePageFlags>(
+  config: {
+    rawConfig: {
+      featureFlags: {
+        homePage: HomePageFlags;
+      };
+    };
+  },
+  override: (flags: HomePageFlags) => HomePageFlags
 ) => {
   return override(config.rawConfig.featureFlags.homePage);
 };
 
-describe("getHomePageFeatureFlags", () => {
+describe('getHomePageFeatureFlags', () => {
   const EXAMPLE_CONFIG = {
-    apiEndpoint: "https://api.example.com",
-    apiVersion: "v1",
-    apiKey: "1234567890",
+    apiEndpoint: 'https://api.example.com',
+    apiVersion: 'v1',
+    apiKey: '1234567890',
     rawConfig: {
       featureFlags: {
         homePage: {
@@ -26,7 +32,7 @@ describe("getHomePageFeatureFlags", () => {
       },
     },
   };
-  it("Should return the homePage flag object", () => {
+  it('Should return the homePage flag object', () => {
     const flags = getHomePageFeatureFlags(
       EXAMPLE_CONFIG,
       (defaultFlags) => defaultFlags
@@ -42,7 +48,7 @@ describe("getHomePageFeatureFlags", () => {
     ];
   });
 
-  it("Should allow you to modify the result", () => {
+  it('Should allow you to modify the result', () => {
     const flags = getHomePageFeatureFlags(EXAMPLE_CONFIG, (defaultFlags) => ({
       ...defaultFlags,
       showBanner: false,
